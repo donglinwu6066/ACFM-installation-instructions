@@ -28,6 +28,7 @@ $ conda activate acfm
 ### download pytorch
 ```console
 (acfm)$ conda install -c pytorch pytorch=1.7.0 torchvision cudatoolkit=11.0
+conda install pytorch==1.7.0 torchvision==0.8.0 torchaudio==0.7.0 cudatoolkit=11.0 -c pytorch
 ```
 
 ### install pytorch3d prerequisites
@@ -58,7 +59,8 @@ rebuild the pytorch3d by method 2.
 Recommend!
 ```console
 (acfm)$ git clone https://github.com/facebookresearch/pytorch3d.git
-(acfm)$ cd pytorch3d && pip install -e .
+(acfm)$ export CUDA_HOME=/usr/local/cuda-11
+(acfm)$ cd pytorch3d && rm -rf build/ **/*.so && pip install -e .
 ```
 To rebuild it after installing from a local clone run.
 ```console
@@ -66,17 +68,6 @@ To rebuild it after installing from a local clone run.
 (acfm)$ pip install -e .
 ```
 
-If error messages show that
-
-```console
-fatal error: cuda_runtime_api.h: No such file or directory
-5 | <cuda_runtime_api.h>
-  | ^~~~~~~~~~~~~~~~~~~~
-```
-solve by exporting CUDA_HOME
-```console
-(acfm)$ export CUDA_HOME=/usr/local/cuda-11
-```
 In this project, if you run on RTX 30 series, you may get errors
 
 ```console
@@ -115,7 +106,7 @@ ValueError: numpy.ndarray size changed, may indicate binary incompatibility. Exp
 
 update pip
 ```console
-pip install --upgrade numpy
+(acfm)$ pip install --upgrade numpy
 ```
 
 Training on a server leads to over-requesting
@@ -125,25 +116,23 @@ ConnectionRefusedError: [Errno 111] Connection refused
 We can solve it by
 ```console
 # terminal 1 
-$ python -m visdom.server
+(acfm)$ $ python -m visdom.server
 
 # terminal 2
-CUDA_VISIBLE_DEVICES=0 python3 main.py --name=bird_net --num_lbs 32 --symmetric_texture=False --nz_feat 256 --cam_loss_wt 2. --mask_loss_wt 2. --symmetric=False --print_freq 100 --display_freq 100 --boundaries_reg_wt 1. --bdt_reg_wt 0.1 --edt_reg_wt 0.1  --tex_size 6 --save_epoch_freq 10 --kp_loss_wt 50. --tex_loss_wt 1.
+(acfm)$ CUDA_VISIBLE_DEVICES=0 python3 main.py --name=bird_net --num_lbs 32 --symmetric_texture=False --nz_feat 256 --cam_loss_wt 2. --mask_loss_wt 2. --symmetric=False --print_freq 100 --display_freq 100 --boundaries_reg_wt 1. --bdt_reg_wt 0.1 --edt_reg_wt 0.1  --tex_size 6 --save_epoch_freq 10 --kp_loss_wt 50. --tex_loss_wt 1.
+```
+When you are training multiframe, if PyTorch and torchvision are mismatched
+```console
+RuntimeError: Couldn't load custom C++ ops. This can happen if your PyTorch and torchvision versions are incompatible, or if you had errors while compiling torchvision from source. For further information on the compatible versions, check https://github.com/pytorch/vision#installation for the compatibility matrix. Please check your PyTorch version with torch.__version__ and your torchvision version with torchvision.__version__ and verify if they are compatible, and if not please reinstall torchvision so that it matches your PyTorch install.
 ```
 
-## Resource monitoring for monocular
-### Hardware: 
-CPU: i7-8700K
-* RAM: ~9G
+reinstall to a match version
 
-GPU: 1080 Ti
-* temperature: 60
-* Volatile GPU-util: 90~100%
-* RAM: ~5G
-
-### Other:
-* Time: ~9 hr(50 epoches)
-
+[pytorch-torchvision version](https://pypi.org/project/torchvision/)
+```console
+(acfm)$ pip uninstall torchvision
+(acfm)$ pip install torchvision==0.7.0
+```
 ## Result
 [acfm models](https://drive.google.com/drive/folders/1Ds4FzAG1DL31mm0-DRtpAbMLTd_bK47l?usp=sharing)
 ## terminal cheatsheet
