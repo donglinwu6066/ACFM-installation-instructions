@@ -1,7 +1,7 @@
 # Our training model
-* date: 2021/12/15
-* training process: 
-* total time: 
+* date: 2021/12/16 ~ 19
+* training process: 200 epoch / 80 hours
+* total time: 85 hours
 
 ## Resource monitoring for monocular
 ### Hardware: 
@@ -23,7 +23,11 @@ GPU 2: 1080 Ti
 CUDA_VISIBLE_DEVICES=0,1 python -B main.py --name=horse_our_nokp --category horse --display_port 8097 --batch_size=8 --learning_rate 1e-4 --num_lbs 16 --nz_feat 256 --symmetric_texture=False --num_guesses 6 --use_gtpose=False --symmetric=False --mesh_dir meshes/horse.obj  --root_dir ../../../../../data/dd/TigDog_new_wnrsfm/ --tmp_dir tmp_horsenokp/ --kp_loss_wt 0. --of_loss_wt 0.1 --mask_loss_wt 2. --boundaries_reg_wt 1. --bdt_reg_wt 0.1 --edt_reg_wt 0.5  --deform_reg_wt 0.0001  --rigid_wt 10. --display_freq 100  --drop_hypothesis  --print_freq 100  --cam_loss_wt 2.  --scale_lr_decay 0.1  --root_dir_yt ../../../../../data/dd/TigDog_new_wnrsfm/ --expand_ytvis=True  --save_epoch_freq 10 --num_reps 20 --tex_num_reps 20 --tex_loss_wt 1. --az_el_cam True --scale_bias=0.9 --az_euler_range 360 --num_kps 19 --triangle_reg_wt 0.01  --optimize_deform --warmup --texture_warmup --scale_mesh=True --num_epochs 200
 ```
 
-## Evaluating param: 
+## Evaluating param:
+```console
+CUDA_VISIBLE_DEVICES=0 python -B -m benchmark.evaluate --name=horse_net_nokp --category horse --batch_size=12 --num_lbs 16 --nz_feat 256 --symmetric_texture=False --symmetric=False --mesh_dir meshes/horse.obj --root_dir ../../../../../data/dd/TigDog_new_wnrsfm/ --tmp_dir tmp_horse_sfm_eval/  --num_train_epoch 200 --num_guesses 6 --num_fram
+es 1 --scale_template True  --scale_lr 0.1
+```
 
 ## Error notes
 if the system show any unknown errors, you can try to download dataset again, e.g.:
@@ -33,3 +37,4 @@ RuntimeError: The size of tensor a (192) must match the size of tensor b (24) at
 ```
 
 ## Results:
+* horse_net_nokp: mean iou 0.489, pck.1 0.455, pck.15 0.675
